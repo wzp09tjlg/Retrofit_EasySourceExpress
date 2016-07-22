@@ -1,9 +1,11 @@
 package com.sina.retrofit_easysourceexpress.view.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.sina.retrofit_easysourceexpress.R;
 import com.sina.retrofit_easysourceexpress.newwork.Constant;
@@ -24,6 +26,8 @@ public class RetrofitActivity extends AppCompatActivity implements View.OnClickL
     private Button mBtnSyc;
     private Button mBtnAsc;
 
+    private Context mContext;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +42,8 @@ public class RetrofitActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initData(){
+        mContext = this;
+
         mBtnAsc.setOnClickListener(this);
         mBtnSyc.setOnClickListener(this);
     }
@@ -64,14 +70,19 @@ public class RetrofitActivity extends AppCompatActivity implements View.OnClickL
         call.enqueue(new Callback<ExpressList>() {
             @Override
             public void onResponse(Call<ExpressList> call, Response<ExpressList> response) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("onResponse:\n");
                 for(ExpressList.ExpressBeanList.ExpressBean bean : response.body().showapi_res_body.expressList){
                     LogUtil.e("bean:" + bean);
+                    builder.append("bean:" + bean);
                 }
+                Toast.makeText(mContext,builder.toString(),Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(Call<ExpressList> call, Throwable t) {
                LogUtil.e("onFailure:" + t.getMessage().toString());
+                Toast.makeText(mContext, "onFailure:\n" + t.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
